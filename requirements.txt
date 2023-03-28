@@ -1,0 +1,2 @@
+ormsgpack~=1.2.5
+pyelftools~=0.29
