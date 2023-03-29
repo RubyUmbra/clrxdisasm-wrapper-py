@@ -1,5 +1,6 @@
 from struct import unpack
-from construct import Construct, BitStruct, ByteSwapped, BitsInteger, Padding
+
+from construct import BitsInteger, BitStruct, ByteSwapped, Construct, Padding
 
 
 class ComputePgmRsrc:

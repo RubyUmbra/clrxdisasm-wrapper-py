@@ -1,6 +1,7 @@
+from typing import BinaryIO
+
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import NoteSection, Section
-from typing import BinaryIO
 
 __EF_AMDGPU_MACH_MASK: int = 0x0ff
 __EF_AMDGPU_MACH: dict[int, str] = {
@@ -35,15 +36,19 @@ def __extract_arch(elf: ELFFile) -> str:
 
 def __extract_metadata(elf: ELFFile) -> bytes:
     note_section: NoteSection = elf.get_section_by_name('.note')
-    assert type(note_section) == NoteSection, 'bad binary format: missed ".note" section'
-    notes: list[bytes] = [note.n_desc for note in note_section.iter_notes() if note.n_name == 'AMDGPU']
+    assert isinstance(note_section, NoteSection), \
+        'bad binary format: missed ".note" section'
+    notes: list[bytes] = [note.n_desc
+                          for note in note_section.iter_notes()
+                          if note.n_name == 'AMDGPU']
     assert len(notes) == 1
     return notes[0]
 
 
 def __extract_section(elf: ELFFile, name: str) -> bytes:
     section: Section = elf.get_section_by_name(name)
-    assert type(section) == Section, f'bad binary format: missed {name} section'
+    assert isinstance(section, Section), \
+        f'bad binary format: missed {name} section'
     return section.data()
 
 
@@ -57,7 +62,7 @@ def __extract_text(elf: ELFFile) -> bytes:
 
 def extract_elf(stream: BinaryIO) -> (str, bytes, bytes, bytes):
     elf: ELFFile = ELFFile(stream)
-    assert type(elf) == ELFFile, f'bad binary format: not an ELF'
+    assert isinstance(elf, ELFFile), 'bad binary format: not an ELF'
     arch: str = __extract_arch(elf)
     metadata: bytes = __extract_metadata(elf)
     rodata: bytes = __extract_rodata(elf)
