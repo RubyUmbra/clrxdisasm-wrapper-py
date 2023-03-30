@@ -3,6 +3,16 @@ from typing import BinaryIO
 from elftools.elf.elffile import ELFFile
 from elftools.elf.sections import NoteSection, Section
 
+__EI_ABIVERSION: int = 8
+__ELFABIVERSION_AMDGPU_HSA_V3: int = 1
+__ELFABIVERSION_AMDGPU_HSA_V4: int = 2
+__ELFABIVERSION_AMDGPU_HSA_V5: int = 3
+__CODE_OBJECT_VERSION: dict[int, int] = {
+    __ELFABIVERSION_AMDGPU_HSA_V3: 3,
+    __ELFABIVERSION_AMDGPU_HSA_V4: 4,
+    __ELFABIVERSION_AMDGPU_HSA_V5: 5,
+}
+
 __EF_AMDGPU_MACH_MASK: int = 0x0ff
 __EF_AMDGPU_MACH: dict[int, str] = {
     # RDNA
@@ -24,6 +34,15 @@ __EF_AMDGPU_MACH: dict[int, str] = {
     0x047: 'gfx11',  # gfx1102
     0x044: 'gfx11',  # gfx1103
 }
+
+
+def __extract_code_object_version(elf: ELFFile) -> int:
+    e_ident: bytes = elf.e_ident_raw
+    abi_ver: int = e_ident[__EI_ABIVERSION]
+    co_ver: int | None = __CODE_OBJECT_VERSION.get(abi_ver)
+    assert co_ver is not None, \
+        f'unknown code object version: e_ident[EI_ABIVERSION] == {abi_ver}'
+    return co_ver
 
 
 def __extract_arch(elf: ELFFile) -> str:
@@ -60,11 +79,12 @@ def __extract_text(elf: ELFFile) -> bytes:
     return __extract_section(elf, '.text')
 
 
-def extract_elf(stream: BinaryIO) -> (str, bytes, bytes, bytes):
+def extract_elf(stream: BinaryIO) -> (int, str, bytes, bytes, bytes):
     elf: ELFFile = ELFFile(stream)
     assert isinstance(elf, ELFFile), 'bad binary format: not an ELF'
+    co_ver: int = __extract_code_object_version(elf)
     arch: str = __extract_arch(elf)
     metadata: bytes = __extract_metadata(elf)
     rodata: bytes = __extract_rodata(elf)
     text: bytes = __extract_text(elf)
-    return arch, metadata, rodata, text
+    return co_ver, arch, metadata, rodata, text
