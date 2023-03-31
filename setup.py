@@ -10,5 +10,5 @@ setup(name='clrxdisasm_wrapper',
       url='https://github.com/RubyUmbra/clrxdisasm-wrapper-py',
       license='MIT',
       packages=['clrxdisasm_wrapper', ],
-      install_requires=['ormsgpack', 'pyelftools', ],
+      install_requires=['argparse', 'construct', 'ormsgpack', 'pyelftools', ],
       )
