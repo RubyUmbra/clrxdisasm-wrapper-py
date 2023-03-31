@@ -1,6 +1,6 @@
 from struct import unpack
 
-from construct import (BitsInteger, BitStruct, Bitwise, Bytewise, Flag,
+from construct import (BitsInteger, BitStruct, Bitwise, Bytewise, Const, Flag,
                        Int32ul, Int64ul, Padding, Struct)
 
 __COMPUTE_PGM_RSRC1 = Struct(
@@ -59,23 +59,25 @@ __KERNEL_DESCRIPTOR = BitStruct(
     "GROUP_SEGMENT_FIXED_SIZE" / Bytewise(Int32ul),
     "PRIVATE_SEGMENT_FIXED_SIZE" / Bytewise(Int32ul),
     "KERNARG_SIZE" / Bytewise(Int32ul),
-    Padding(4 * 8),
+    Const(b"\x00" * 4 * 8),
     "KERNEL_CODE_ENTRY_BYTE_OFFSET" / Bytewise(Int64ul),
-    Padding(20 * 8),
+    Const(b"\x00" * 20 * 8),
     "COMPUTE_PGM_RSRC3" / __COMPUTE_PGM_RSRC3,
     "COMPUTE_PGM_RSRC1" / __COMPUTE_PGM_RSRC1,
     "COMPUTE_PGM_RSRC2" / __COMPUTE_PGM_RSRC2,
-    "ENABLE_SGPR_PRIVATE_SEGMENT_BUFFER" / Flag,
-    "ENABLE_SGPR_DISPATCH_PTR" / Flag,
-    "ENABLE_SGPR_QUEUE_PTR" / Flag,
-    "ENABLE_SGPR_KERNARG_SEGMENT_PTR" / Flag,
-    "ENABLE_SGPR_DISPATCH_ID" / Flag,
-    "ENABLE_SGPR_FLAT_SCRATCH_INIT" / Flag,
+    Const(b"\x00" * 1),
     "ENABLE_SGPR_PRIVATE_SEGMENT_SIZE" / Flag,
-    Padding(3),
-    "ENABLE_WAVEFRONT_SIZE32" / Flag,
+    "ENABLE_SGPR_FLAT_SCRATCH_INIT" / Flag,
+    "ENABLE_SGPR_DISPATCH_ID" / Flag,
+    "ENABLE_SGPR_KERNARG_SEGMENT_PTR" / Flag,
+    "ENABLE_SGPR_QUEUE_PTR" / Flag,
+    "ENABLE_SGPR_DISPATCH_PTR" / Flag,
+    "ENABLE_SGPR_PRIVATE_SEGMENT_BUFFER" / Flag,
+    Const(b"\x00" * 4),
     "USES_DYNAMIC_STACK" / Flag,
-    Padding(4 + 6 * 8),
+    "ENABLE_WAVEFRONT_SIZE32" / Flag,
+    Const(b"\x00" * 2),
+    Const(b"\x00" * 6 * 8),
 )
 
 
