@@ -35,6 +35,8 @@ __EF_AMDGPU_MACH: dict[int, str] = {
     0x044: 'gfx11',  # gfx1103
 }
 
+__NT_AMDGPU_METADATA: int = 32
+
 
 def __extract_code_object_version(elf: ELFFile) -> int:
     e_ident: bytes = elf.e_ident_raw
@@ -59,8 +61,10 @@ def __extract_metadata(elf: ELFFile) -> bytes:
         'bad binary format: missed ".note" section'
     notes: list[bytes] = [note.n_desc
                           for note in note_section.iter_notes()
-                          if note.n_name == 'AMDGPU']
-    assert len(notes) == 1
+                          if note.n_name == 'AMDGPU'
+                          and note.n_type == __NT_AMDGPU_METADATA]
+    assert len(notes) == 1, \
+        'bad binary format: bad ".note" section'
     return notes[0]
 
 
