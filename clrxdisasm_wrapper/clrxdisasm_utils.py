@@ -14,6 +14,8 @@ def __run_clrxdisasm(
         wavefront_size: int,
         filename: str
 ) -> list[str]:
+    if arch == "gfx11":
+        arch = "gfx10"
     args: list[str] = ['-dCfsr', f'--arch={arch}']
     if wavefront_size == 32:
         args.append('--wave32')
