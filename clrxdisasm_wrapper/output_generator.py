@@ -5,8 +5,6 @@ from .metadata import KernelArgumentMetadata, KernelMetadata, Metadata
 
 def __generate_kernel_descriptor_config(descriptor, stdout: io.StringIO):
     dims = "xyz"[:1 + descriptor.COMPUTE_PGM_RSRC2.ENABLE_VGPR_WORKITEM_ID]
-    sgprsnum = descriptor.COMPUTE_PGM_RSRC1.GRANULATED_WAVEFRONT_SGPR_COUNT
-    vgprsnum = descriptor.COMPUTE_PGM_RSRC1.GRANULATED_WORKITEM_VGPR_COUNT
     shared_vgprs = descriptor.COMPUTE_PGM_RSRC3.SHARED_VGPR_COUNT
     dx10clamp = descriptor.COMPUTE_PGM_RSRC1.ENABLE_DX10_CLAMP
     ieeemode = descriptor.COMPUTE_PGM_RSRC1.ENABLE_IEEE_MODE
@@ -24,8 +22,6 @@ def __generate_kernel_descriptor_config(descriptor, stdout: io.StringIO):
 
     stdout.write('    .config\n')
     stdout.write(f'        .dims {dims}\n')
-    stdout.write(f'        .sgprsnum {sgprsnum}\n')
-    stdout.write(f'        .vgprsnum {vgprsnum}\n')
     stdout.write(f'        .shared_vgprs {shared_vgprs}\n')
     if dx10clamp:
         stdout.write('        .dx10clamp\n')
