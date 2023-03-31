@@ -16,23 +16,23 @@ __CODE_OBJECT_VERSION: dict[int, int] = {
 __EF_AMDGPU_MACH_MASK: int = 0x0ff
 __EF_AMDGPU_MACH: dict[int, str] = {
     # RDNA
-    0x033: 'gfx10',  # gfx1010
-    0x034: 'gfx10',  # gfx1011
-    0x035: 'gfx10',  # gfx1012
-    0x042: 'gfx10',  # gfx1013
+    0x033: 'gfx1010',
+    0x034: 'gfx1011',
+    0x035: 'gfx1012',
+    0x042: 'gfx1013',
     # RDNA2
-    0x036: 'gfx10',  # gfx1030
-    0x037: 'gfx10',  # gfx1031
-    0x038: 'gfx10',  # gfx1032
-    0x039: 'gfx10',  # gfx1033
-    0x03e: 'gfx10',  # gfx1034
-    0x03d: 'gfx10',  # gfx1035
-    0x045: 'gfx10',  # gfx1036
+    0x036: 'gfx1030',
+    0x037: 'gfx1031',
+    0x038: 'gfx1032',
+    0x039: 'gfx1033',
+    0x03e: 'gfx1034',
+    0x03d: 'gfx1035',
+    0x045: 'gfx1036',
     # RDNA3
-    0x041: 'gfx11',  # gfx1100
-    0x046: 'gfx11',  # gfx1101
-    0x047: 'gfx11',  # gfx1102
-    0x044: 'gfx11',  # gfx1103
+    0x041: 'gfx1100',
+    0x046: 'gfx1101',
+    0x047: 'gfx1102',
+    0x044: 'gfx1103',
 }
 
 __NT_AMDGPU_METADATA: int = 32
