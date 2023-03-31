@@ -1,4 +1,5 @@
 import io
+import re
 
 from .metadata import KernelArgumentMetadata, KernelMetadata, Metadata
 
@@ -102,6 +103,13 @@ def __generate_kernel_config(metadata: KernelMetadata,
     __generate_kernel_metadata_config(metadata, stdout)
 
 
+def generate_prefix(filename, arch, stdout: io.StringIO):
+    stdout.write(f"/* Disassembling '{filename}' */\n")
+    stdout.write(f'.gpu {arch.upper()}\n')
+    stdout.write(f'.arch_minor {arch[-2]}\n')
+    stdout.write(f'.arch_stepping {arch[-1]}\n')
+
+
 def generate_config(metadata: Metadata,
                     kernel_descriptors: list,
                     stdout: io.StringIO):
@@ -110,3 +118,20 @@ def generate_config(metadata: Metadata,
     for kernel_metadata, kernel_descriptor \
             in zip(metadata.amdhsa_kernels, kernel_descriptors):
         __generate_kernel_config(kernel_metadata, kernel_descriptor, stdout)
+
+
+def generate_text(text, kernels_names, stdout: io.StringIO):
+    text_it = iter(text)
+    while next(text_it, ".text") != ".text":
+        pass
+    stdout.write('.text\n')
+    kernels_names = iter(kernels_names)
+    print_name = True
+    for line in text_it:
+        line = line.strip()
+        if re.fullmatch(r"^/\*[0-9a-fA-F]+\*/\s+s_endpgm$", line):
+            print_name = True
+        elif print_name and not re.match(r"^/\*[0-9a-fA-F]+\*/\s+(s_nop\s+0x[0-9a-fA-F]+|s_code_end)$", line):
+            stdout.write(f'{next(kernels_names, None)}:\n')
+            print_name = False
+        stdout.write(f'{line}\n')
