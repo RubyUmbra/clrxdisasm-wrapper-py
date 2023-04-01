@@ -28,7 +28,7 @@ def main(filename, clrxdisasm):
 
 
 def start_point():
-    parser = argparse.ArgumentParser('clrxdisasm_wrapper')
+    parser = argparse.ArgumentParser('clrxdisasm-wrapper')
     parser.add_argument('input_file', help='path to input binary file')
     parser.add_argument('clrxdisasm', help='path to clrxdisasm')
     namespace = parser.parse_args(sys.argv[1:])
